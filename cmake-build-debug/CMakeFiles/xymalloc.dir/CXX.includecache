@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+D:/storage/code/xymalloc/main.cc
+algorithm
+-
+iostream
+-
+random
+-
+vector
+-
+functional
+-
+unordered_map
+-
+

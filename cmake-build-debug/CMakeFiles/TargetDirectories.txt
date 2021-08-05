@@ -1,0 +1,3 @@
+D:/storage/code/xymalloc/cmake-build-debug/CMakeFiles/xymalloc.dir
+D:/storage/code/xymalloc/cmake-build-debug/CMakeFiles/edit_cache.dir
+D:/storage/code/xymalloc/cmake-build-debug/CMakeFiles/rebuild_cache.dir
