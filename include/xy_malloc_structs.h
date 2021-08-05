@@ -5,6 +5,9 @@
 #ifndef XYMALLOC_XY_MALLOC_STRUCTS_H
 #define XYMALLOC_XY_MALLOC_STRUCTS_H
 
+#include <stddef.h>
+#include <stdint.h>
+
 #include <atomic>
 
 using std::atomic;

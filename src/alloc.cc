@@ -3,9 +3,7 @@
 //
 
 #include <stdlib.h>
-#include <stdint.h>
 #include "xymalloc.h"
-#include "xy_malloc_structs.h"
 
 xy_decl_cache_align const xy_heap_t _xy_heap_empty;
 __thread xy_heap_t* _tl_heap = (xy_heap_t*)&_xy_heap_empty;

@@ -6,7 +6,9 @@
 #define XYMALLOC_XYMALLOC_H
 #include "xymalloc_macro.h"
 #include "xymalloc_internal.h"
+#include "xy_malloc_structs.h"
 #include "xymalloc_attribute.h"
+
 
 // ------------------------------------------------------
 // Standard malloc interface

@@ -4,6 +4,11 @@
 
 #ifndef XYMALLOC_XYMALLOC_MACRO_H
 #define XYMALLOC_XYMALLOC_MACRO_H
+#include <stdint.h>
+
+#define KiB     ((size_t)1024)
+#define MiB     (KiB*KiB)
+#define GiB     (MiB*KiB)
 
 #define XY_SMALL_SIZE_MAX   (128 * sizeof(void*))
 
