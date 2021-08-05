@@ -1,3 +1,0 @@
-D:\app\CLion\bin\cmake\win\bin\cmake.exe -E remove -f CMakeFiles\xymalloc.dir/objects.a
-D:\env\MinGW\mingw64\bin\ar.exe cr CMakeFiles\xymalloc.dir/objects.a @CMakeFiles\xymalloc.dir\objects1.rsp
-D:\env\MinGW\mingw64\bin\g++.exe -g   -Wl,--whole-archive CMakeFiles\xymalloc.dir/objects.a -Wl,--no-whole-archive  -o xymalloc.exe -Wl,--out-implib,libxymalloc.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\xymalloc.dir\linklibs.rsp

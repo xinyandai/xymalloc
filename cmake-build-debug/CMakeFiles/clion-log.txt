@@ -1,4 +1,0 @@
-D:\app\CLion\bin\cmake\win\bin\cmake.exe -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - MinGW Makefiles" D:\storage\code\xymalloc
--- Configuring done
--- Generating done
--- Build files have been written to: D:/storage/code/xymalloc/cmake-build-debug
