@@ -11,13 +11,14 @@ jobs:
       - run: free -h
   run_test:
     runs-on: ubuntu-latest
-    run: |
-       mkdir build 
-       cd build
-       pwd
-       ls
-       ls ..
-       cmake ..
-       make huge_page
-       ./huge_page
+    steps: 
+      run: |
+        mkdir build 
+        cd build
+        pwd
+        ls
+        ls ..
+        cmake ..
+        make huge_page
+        ./huge_page
 
