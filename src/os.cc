@@ -17,7 +17,13 @@
 #define MPOL_PREFERRED 1
 #endif
 
-
+static size_t xy_get_numa_node() {
+  unsigned long node = 0;
+  unsigned long ncpu = 0;
+  long err = syscall(SYS_getcpu, &ncpu, &node, NULL);
+  if (err != 0) return 0;
+  return node;
+}
 /// mbind sets the NUMA memory policy for the memory range specified by start
 /// and length len. The memory policy defines which node memory is allocated.
 /// The policy has no effect on ranges in which memory has already been
@@ -95,7 +101,7 @@ void* xy_mmap_numa(void* addr, size_t size, int numa_node, bool try_large) {
   if (p == MAP_FAILED)
     return MAP_FAILED;
   if (numa_node >= 0 && numa_node < 64) { // at most 64 nodes
-    uintptr_t numa_mask = (1UL << numa_node);
+    unsigned long int numa_mask = (1UL << numa_node);
     // TODO: does `mbind` work correctly for huge OS pages? should we
     // use `set_mempolicy` before calling mmap instead?
     // see: <https://lkml.org/lkml/2017/2/9/875>
