@@ -14,11 +14,5 @@ jobs:
     steps: 
       - run: |
           mkdir build 
-          cd build
-          pwd
-          ls
-          ls ..
-          cmake ..
-          make huge_page
-          ./huge_page
+          cd build && cmake .. && make huge_page && ./huge_page
 
