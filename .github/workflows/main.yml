@@ -1,0 +1,9 @@
+name: XY Malloc
+on: [push, pull_request, release]
+jobs:
+  test_env:
+    runs_on: ubuntu-latest
+    steps:
+      - run: gcc --version
+      - run: cmake --version
+
