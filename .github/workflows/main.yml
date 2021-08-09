@@ -8,11 +8,14 @@ jobs:
       - run: gcc --version
       - run: cmake --version
       - run: df -h
-      - run: top
+      - run: free
   run_test:
     runs-on: ubuntu-latest
     steps:
       - run: mkdir build && cd build
+      - run: pwd
+      - run: ls
+      - run: ls ..
       - run: cmake ..
       - run: make huge_page
       - run: ./huge_page
