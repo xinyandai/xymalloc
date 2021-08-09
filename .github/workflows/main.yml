@@ -2,6 +2,7 @@ name: XY Malloc
 on: [push, pull_request, release]
 jobs:
   check_env:
+    name: Check Environments
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -10,9 +11,12 @@ jobs:
       - run: df -h
       - run: free -h
   run_test:
+    name: Run Tests
     runs-on: ubuntu-latest
     steps: 
       - run: |
+          pwd
           mkdir build 
-          cd build && cmake .. && make huge_page && ./huge_page
+          ls -al
+          cd build && ls -al && ls .. -al && cmake .. && make huge_page && ./huge_page
 
