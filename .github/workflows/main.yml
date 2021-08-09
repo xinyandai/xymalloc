@@ -13,9 +13,8 @@ jobs:
     name: Run Tests
     runs-on: ubuntu-latest
     steps: 
-      - uses: actions/checkout@v1
-      - run: mkdir build && cd build
-      - run: cmake ..
-      - run: make huge_page
-      - run: ./huge_page
+      - uses: actions/checkout@v2
+      - run: mkdir build
+      - run: cd build && cmake .. && make huge_page
+      - run: ./build/huge_page
 
