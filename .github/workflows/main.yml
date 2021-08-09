@@ -15,8 +15,6 @@ jobs:
     steps: 
       - uses: actions/checkout@v1
       - run: |
-          pwd
           mkdir build 
-          ls -al
-          cd build && ls -al && ls .. -al && cmake .. && make huge_page && ./huge_page
+          cd build && cmake .. && make huge_page && ./huge_page
 
