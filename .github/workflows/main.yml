@@ -13,12 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     steps: 
       - run: |
-        mkdir build 
-        cd build
-        pwd
-        ls
-        ls ..
-        cmake ..
-        make huge_page
-        ./huge_page
+          mkdir build 
+          cd build
+          pwd
+          ls
+          ls ..
+          cmake ..
+          make huge_page
+          ./huge_page
 
