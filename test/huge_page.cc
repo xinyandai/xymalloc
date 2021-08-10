@@ -44,6 +44,7 @@ void __test_address(char* addr) {
 }
 
 #define _test_address(addr) { \
+  printf("testing %s \n", __PRETTY_FUNCTION__); \
   if (addr == MAP_FAILED) { \
     printf("Error at mmap %s\n\n", __PRETTY_FUNCTION__); \
     return; \
@@ -53,12 +54,7 @@ void __test_address(char* addr) {
 
 void test_mavise() {
   bool is_large;
-//  char *addr = (char*) xy_mmap(NULL, LENGTH, true, &is_large);
-  char *addr = NULL;
-
-  unsigned int huge_page_size = 1 << 21;
-  posix_memalign((void**)&addr, huge_page_size, LENGTH);
-
+  char *addr = (char*) xy_mmap(NULL, LENGTH, true, &is_large);
 
   if (is_large)
     printf("large page is used\n");
