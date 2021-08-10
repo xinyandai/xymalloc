@@ -7,19 +7,20 @@
 #include "os.h"
 
 #define LENGTH (1024UL*1024*1024)
+#define STEP (4096)
 
 
 static void write_bytes(char *addr) {
   unsigned long i;
 
-  for (i = 0; i < LENGTH; i++)
+  for (i = 0; i < LENGTH; i += STEP)
     *(addr + i) = (char)i;
 }
 
 static int read_bytes(char *addr) {
   unsigned long i;
 
-  for (i = 0; i < LENGTH; i++)
+  for (i = 0; i < LENGTH; i += STEP)
     if (*(addr + i) != (char)i) {
       printf("Mismatch at %lu\n", i);
       return 1;
@@ -52,6 +53,12 @@ void __test_address(char* addr) {
   __test_address(addr); \
  }
 
+void test_normal() {
+  bool is_large;
+  char *addr = (char*) xy_mmap(NULL, LENGTH, false, &is_large);
+  _test_address(addr);
+}
+
 void test_mavise() {
   bool is_large;
   char *addr = (char*) xy_mmap(NULL, LENGTH, true, &is_large);
@@ -81,6 +88,7 @@ void test_mmap_large_at_numa() {
 
 
 int main() {
+  test_normal();
   test_mavise();
   test_mmap_huge();
   test_mmap_at_numa();
