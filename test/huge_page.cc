@@ -2,15 +2,12 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/mman.h>
+#include <sys/time.h>
+
 #include "os.h"
 
-#define LENGTH (256UL*1024*1024)
+#define LENGTH (1024UL*1024*1024)
 
-
-
-static void check_bytes(char *addr) {
-  printf("First hex is %x\n", *((unsigned int *)addr));
-}
 
 static void write_bytes(char *addr) {
   unsigned long i;
@@ -22,7 +19,6 @@ static void write_bytes(char *addr) {
 static int read_bytes(char *addr) {
   unsigned long i;
 
-  check_bytes(addr);
   for (i = 0; i < LENGTH; i++)
     if (*(addr + i) != (char)i) {
       printf("Mismatch at %lu\n", i);
@@ -33,10 +29,12 @@ static int read_bytes(char *addr) {
 
 void __test_address(char* addr) {
   printf("Returned address is %p\n", addr);
-  check_bytes(addr);
+  struct timeval starttv, endtv;
+  gettimeofday(&starttv, NULL);
   write_bytes(addr);
   read_bytes(addr);
-  sleep(10);
+  gettimeofday(&endtv, NULL);
+  printf("time cost : %ld us\n", (endtv.tv_sec - starttv.tv_sec) * 1000000 + endtv.tv_usec - starttv.tv_usec);
   /* munmap() length of MAP_HUGETLB memory must be hugepage aligned */
   if (munmap(addr, LENGTH)) {
     printf("Error at munmap\n");
@@ -55,7 +53,11 @@ void __test_address(char* addr) {
 
 void test_mavise() {
   bool is_large;
-  char *addr = (char*) xy_mmap(NULL, LENGTH, true, &is_large);
+//  char *addr = (char*) xy_mmap(NULL, LENGTH, true, &is_large);
+  char *addr = NULL;
+
+  unsigned int huge_page_size = 1 << 21;
+  posix_memalign((void**)&addr, huge_page_size, LENGTH);
 
 
   if (is_large)

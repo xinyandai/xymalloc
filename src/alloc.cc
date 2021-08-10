@@ -16,6 +16,7 @@ static inline void* _mi_malloc_generic(xy_heap_t* _tl_heap, size_t size) {
 
 extern inline void* xy_malloc(size_t size) xy_attr_noexcept {
   if (xy_likely(size <= XY_SMALL_SIZE_MAX)) {
+    // small block allocation
     size_t idx = _xy_idx_from_size(size);
     xy_page_t * page = _tl_heap->pages_free_direct[idx];
     xy_block_t* block = page->free;
@@ -24,8 +25,10 @@ extern inline void* xy_malloc(size_t size) xy_attr_noexcept {
     }
     page->used++;
     page->free = block->next;
+    return block;
   }
   else {
+    // large block allocation
     return _mi_malloc_generic(_tl_heap, size);
   }
 }

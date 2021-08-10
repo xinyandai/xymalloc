@@ -107,7 +107,7 @@ void* xy_mmap_numa(void* addr, size_t size, int numa_node, bool try_large) {
     // see: <https://lkml.org/lkml/2017/2/9/875>
     long err = xy_mbind(p, size, MPOL_PREFERRED, &numa_mask, 64, 0);
     if (err != 0) {
-     printf("failed to bind huge (1gb) pages to numa node %d: %s\n", numa_node);
+     printf("failed to bind huge (1gb) pages to numa node %d\n", numa_node);
     }
   }
   return p;
