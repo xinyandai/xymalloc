@@ -63,7 +63,7 @@ struct xy_page_s {
   // layout like this to optimize access in `mi_malloc` and `mi_free`
   uint16_t              capacity;          // number of blocks committed, must be the first field, see `segment.c:page_clear`
   uint16_t              reserved;          // number of blocks reserved in memory
-  mi_page_flags_t       flags;             // `in_full` and `has_aligned` flags (8 bits)
+//  mi_page_flags_t       flags;             // `in_full` and `has_aligned` flags (8 bits)
   uint8_t               is_zero:1;         // `true` if the blocks in the free list are zero initialized
   uint8_t               retire_expire:7;   // expiration count for retired blocks
 
@@ -134,38 +134,37 @@ typedef struct xy_page_queue_s {
   xy_page_t* first;
   xy_page_t* last;
   size_t     block_size;
-} mi_page_queue_t;
+} xy_page_queue_t;
 
 
-
+// Maximum number of size classes. (spaced exponentially in 16.7% increments)
+#define XY_BIN_HUGE  (64U)
+#define XY_BIN_FULL  (XY_BIN_HUGE+1)
 
 // A heap owns a set of pages.
 struct xy_heap_s;
 typedef struct xy_heap_s xy_heap_t;
 struct xy_heap_s {
-  mi_tld_t*             tld;
-  mi_page_t*            pages_free_direct[XY_PAGES_DIRECT];  // optimize: array where every entry points a page with possibly free blocks in the corresponding queue for that size.
-  mi_page_queue_t       pages[MI_BIN_FULL + 1];              // queue of pages for each size class (or "bin")
-  _Atomic(mi_block_t*)  thread_delayed_free;
+  xy_page_t*            pages_cached[XY_PAGES_DIRECT];       // optimize: array where every entry points a page with possibly free blocks in the corresponding queue for that size.
+  xy_page_queue_t       pages[XY_BIN_FULL + 1];              // queue of pages for each size class (or "bin")
+  atomic<xy_block_t*>   thread_delayed_free;
   uintptr_t             thread_id;                           // thread this heap belongs too
   uintptr_t             cookie;                              // random cookie to verify pointers (see `_mi_ptr_cookie`)
-  uintptr_t             keys[2];                             // two random keys used to encode the `thread_delayed_free` list
-  mi_random_ctx_t       random;                              // random number context used for secure allocation
   size_t                page_count;                          // total number of pages in the `pages` queues.
   size_t                page_retired_min;                    // smallest retired index (retired pages are fully free, but still in the page queues)
   size_t                page_retired_max;                    // largest retired index into the `pages` array.
-  mi_heap_t*            next;                                // list of heaps per thread
+  xy_heap_t*            next;                                // list of heaps per thread
   bool                  no_reclaim;                          // `true` if this heap should not reclaim abandoned pages
 };
 
-// Thread local data
-struct mi_tld_s {
-  unsigned long long  heartbeat;     // monotonic heartbeat count
-  bool                recurse;       // true if deferred was called; used to prevent infinite recursion.
-  mi_heap_t*          heap_backing;  // backing heap of this thread (cannot be deleted)
-  mi_heap_t*          heaps;         // list of heaps in this thread (so we can abandon all when the thread terminates)
-  mi_segments_tld_t   segments;      // segment tld
-  mi_os_tld_t         os;            // os tld
-  mi_stats_t          stats;         // statistics
-};
+//// Thread local data
+//struct mi_tld_s {
+//  unsigned long long  heartbeat;     // monotonic heartbeat count
+//  bool                recurse;       // true if deferred was called; used to prevent infinite recursion.
+//  mi_heap_t*          heap_backing;  // backing heap of this thread (cannot be deleted)
+//  mi_heap_t*          heaps;         // list of heaps in this thread (so we can abandon all when the thread terminates)
+//  mi_segments_tld_t   segments;      // segment tld
+//  mi_os_tld_t         os;            // os tld
+//  mi_stats_t          stats;         // statistics
+//};
 #endif //XYMALLOC_XY_MALLOC_STRUCTS_H

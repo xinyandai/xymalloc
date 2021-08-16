@@ -5,6 +5,8 @@
 #ifndef XYMALLOC_XYMALLOC_H
 #define XYMALLOC_XYMALLOC_H
 #include "os.h"
+#include "init.h"
+#include "page.h"
 #include "xymalloc_macro.h"
 #include "xymalloc_internal.h"
 #include "xymalloc_structs.h"
