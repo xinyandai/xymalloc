@@ -4,7 +4,7 @@
 #include <sys/mman.h>
 #include <sys/time.h>
 
-#include "os.h"
+#include "xy_os.h"
 
 #define LENGTH (1024UL*1024*1024)
 #define STEP (4096)

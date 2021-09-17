@@ -7,16 +7,10 @@
 
 #include <stddef.h>
 #include <stdint.h>
-
 #include <atomic>
 
 using std::atomic;
 
-
-// free lists contain blocks
-typedef struct mi_block_s {
-  struct mi_block_s* next;
-} xy_block_t;
 
 // A page contains blocks of one specific size (`block_size`).
 // Each page has three list of free blocks:
@@ -79,12 +73,7 @@ struct xy_page_s {
   xy_page_t*            prev;              // previous page owned by this thread with the same `block_size`
 };
 
-typedef enum mi_page_kind_e {
-  MI_PAGE_SMALL,    // small blocks go into 64kb pages inside a segment
-  MI_PAGE_MEDIUM,   // medium blocks go into 512kb pages inside a segment
-  MI_PAGE_LARGE,    // larger blocks go into a single page spanning a whole segment
-  MI_PAGE_HUGE      // huge blocks (>512kb) are put into a single page in a segment of the exact size (but still 2mb aligned)
-} mi_page_kind_t;
+
 
 // Segments are large allocated memory blocks (2mb on 64 bit) from
 // the OS. Inside segments we allocated fixed size _pages_ that
