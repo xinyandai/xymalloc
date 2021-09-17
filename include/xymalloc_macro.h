@@ -11,11 +11,6 @@
 #define MiB     (KiB*KiB)
 #define GiB     (MiB*KiB)
 
-#define XY_SMALL_SIZE_MAX   (1024)
-#define XY_LARGE_SIZE_MAX   (512 * KiB)
-
-#define XY_MEDIUM_OBJ_SIZE_MAX  (128 * KiB)
-#define XY_LARGE_OBJ_SIZE_MAX   (2 * MiB)
 
 #define XY_PAGES_DIRECT   ((XY_SMALL_SIZE_MAX + sizeof(uintptr_t) - 1) / sizeof(uintptr_t))
 
