@@ -5,7 +5,7 @@
 #ifndef XYMALLOC_INCLUDE_XY_POOL_MALLOC_H_
 #define XYMALLOC_INCLUDE_XY_POOL_MALLOC_H_
 
-#include "xymalloc_macro.h"
+#include "xy_macro.h"
 #include "xymalloc_attribute.h"
 
 class pool_allocator {

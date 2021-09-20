@@ -2,13 +2,13 @@
 // Created by xydai on 2021/8/23.
 //
 #pragma once
-#ifndefXYMALLOC_INCLUDE_XY_LIST_H_
-#defineXYMALLOC_INCLUDE_XY_LIST_H_
+#ifndef XYMALLOC_INCLUDE_XY_LIST_H_
+#define XYMALLOC_INCLUDE_XY_LIST_H_
 #include <stddef.h>
 
-typedef struct xy_list_head_t {
-  struct xy_list_head_t *next;
-  struct xy_list_head_t *prev;
+typedef struct xy_list_node_s {
+  struct xy_list_node_s *next;
+  struct xy_list_node_s *prev;
 } xy_list_node;
 
 #define XY_LIST_HEAD(name) xy_list_node name = {&(name), &(name)}
@@ -17,6 +17,8 @@ static inline void xy_list_init(xy_list_node *head) {
   head->prev = head->next = head;
 }
 
+
+
 static inline void xy_list_add_head(xy_list_node *head,
                                     xy_list_node *new_node) {
   head->next->prev = new_node;
@@ -24,6 +26,7 @@ static inline void xy_list_add_head(xy_list_node *head,
   new_node->prev = head;
   head->next = new_node;
 }
+
 
 static inline void xy_list_add_tail(xy_list_node *head,
                                     xy_list_node *new_node) {

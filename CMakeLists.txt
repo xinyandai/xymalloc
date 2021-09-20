@@ -20,5 +20,5 @@ SET(tests
 FOREACH(test ${tests})
 add_executable(${test} test/${test}.cc)
 target_link_libraries(${test} PRIVATE ${LINK_LIBS} xy_malloc_lib)
-ENDFOREACH(EXAMPLE)
+ENDFOREACH(test)
 

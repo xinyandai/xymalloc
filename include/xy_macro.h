@@ -8,11 +8,13 @@
 #include <stddef.h>
 
 #define KiB     ((size_t)1024)
-#define MiB     (KiB*KiB)
-#define GiB     (MiB*KiB)
+#define MiB     (KiB * KiB)
+#define GiB     (MiB * KiB)
+#define XY_PAGE_SIZE (64 * KiB)
+#define XY_SEGMENT_SIZE (2 * MiB)
 
-
-#define XY_PAGES_DIRECT   ((XY_SMALL_SIZE_MAX + sizeof(uintptr_t) - 1) / sizeof(uintptr_t))
+#define xy_block_to_page(block) (xy_page_t*)((uintptr_t)block & ~(XY_PAGE_SIZE - 1))
+#define xy_page_to_segment(page) ((xy_segment_t*)((uintptr_t)page & ~(XY_SEGMENT_SIZE - 1)))
 
 #if defined(__GNUC__) || defined(__clang__)
 #define xy_unlikely(x)     (__builtin_expect(!!(x), 0))

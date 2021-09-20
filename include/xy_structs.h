@@ -12,6 +12,11 @@
 
 using std::atomic;
 
+typedef struct xy_block_s {
+  struct xy_block_s * next;
+} xy_block_t;
+
+
 
 // A page contains blocks of one specific size (`block_size`).
 // Each page has three list of free blocks:
@@ -36,7 +41,7 @@ using std::atomic;
 // - The size is 8 words on 64-bit which helps the page index calculations
 //   (and 10 words on 32-bit, and encoded free lists add 2 words. Sizes 10
 //    and 12 are still good for address calculation)
-// - To limit the structure size, the `xblock_size` is 32-bits only; for
+// - To limit the structure size, the `x_block_size` is 32-bits only; for
 //   blocks > MI_HUGE_BLOCK_SIZE the size is determined from the segment page size
 // - `thread_free` uses the bottom bits as a delayed-free flags to optimize
 //   concurrent frees where only the first concurrent free adds to the owning
@@ -45,28 +50,18 @@ using std::atomic;
 //   at least one block that will be added, or as already been added, to
 //   the owning heap `thread_delayed_free` list. This guarantees that pages
 //   will be freed correctly even if only other threads free blocks.
-struct xy_page_s;
-typedef struct xy_page_s xy_page_t;
-struct xy_page_s {
+typedef struct xy_page_s {
   // "owned" by the segment
-  uint8_t               segment_idx;       // index in the segment `pages` array, `page == &segment->pages[page->segment_idx]`
-
+  xy_list_node          page_queue;
   // layout like this to optimize access in `mi_malloc` and `mi_free`
-  uint16_t              capacity;          // number of blocks committed, must be the first field, see `segment.c:page_clear`
-  uint16_t              reserved;          // number of blocks reserved in memory
-
-
   uint32_t              used;              // number of blocks in use (including blocks in `local_free` and `thread_free`)
-  uint32_t              xblock_size;       // size available in each block (always `>0`)
+  uint32_t              x_block_size;      // size available in each block (always `>0`)
 
   xy_block_t*           free;              // list of available free blocks (`malloc` allocates from this list)
-  xy_block_t*           local_free;        // list of deferred free blocks by this thread (migrates to `free`)
-  atomic<uintptr_t>     xthread_free;  // list of deferred free blocks freed by other threads
-  atomic<uintptr_t>     xheap;
+  atomic<uintptr_t>     other_free;              // list of deferred free blocks freed by other threads
+  atomic<uintptr_t>     x_heap;
 
-  xy_page_t*            next;              // next page owned by this thread with the same `block_size`
-  xy_page_t*            prev;              // previous page owned by this thread with the same `block_size`
-};
+} xy_page_t;
 
 
 
@@ -74,7 +69,8 @@ struct xy_page_s {
 // the OS. Inside segments we allocated fixed size _pages_ that
 // contain blocks.
 typedef struct xy_segment_s {
-  xy_list_node         list;
+  xy_list_node         segment_queue;
+  xy_page_t*           free;
   size_t               used;             // count of pages in use (`used <= capacity`)
   size_t               capacity;         // count of available pages (`#free + used`)
   size_t               segment_size;     // for huge pages this may be different from `MI_SEGMENT_SIZE`
@@ -95,26 +91,20 @@ typedef struct xy_segment_s {
 // in the fast path.
 // ------------------------------------------------------
 
-// Pages of a certain block size are held in a queue.
-typedef struct xy_page_queue_s {
-  xy_list_node list;
-  size_t       block_size;
-} xy_page_queue_t;
 
 
-// Maximum number of size classes. (spaced exponentially in 16.7% increments)
+#define XY_SMALL_WSIZE_MAX  (128)
+#define XY_SMALL_SIZE_MAX   (XY_SMALL_WSIZE_MAX*sizeof(void*))
 #define XY_PAGES_DIRECT   ((XY_SMALL_SIZE_MAX + sizeof(uintptr_t) - 1) / sizeof(uintptr_t))
-#define XY_BIN_HUGE  (64U)
-#define XY_BIN_FULL  (XY_BIN_HUGE+1)
 // A heap owns a set of pages.
-struct xy_heap_s;
-typedef struct xy_heap_s xy_heap_t;
 typedef struct xy_heap_s {
-  xy_page_t*            pages_cached[XY_PAGES_DIRECT];       // optimize: array where every entry points a page with possibly free blocks in the corresponding queue for that size.
-  xy_page_queue_t       pages[XY_BIN_FULL + 1];              // queue of pages for each size class (or "bin")
+  xy_list_node          pages[XY_PAGES_DIRECT];
+  xy_page_t*            cache[XY_PAGES_DIRECT];
   atomic<xy_block_t*>   thread_delayed_free;
   uintptr_t             thread_id;                           // thread this heap belongs too
-  xy_heap_t*            next;                                // list of heaps per thread
+  xy_list_node          free_segment_queue;
+  xy_list_node          full_segment_queue;
+
 } xy_heap_t;
 
 #endif //XYMALLOC_XY_MALLOC_STRUCTS_H

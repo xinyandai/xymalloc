@@ -4,8 +4,7 @@
 #pragma once
 #ifndef XYMALLOC_INCLUDE_XY_MALLOC_H_
 #define XYMALLOC_INCLUDE_XY_MALLOC_H_
-#include "xymalloc_macro.h"
-#include "xymalloc_attribute.h"
+#include "xy_macro.h"
 
 xy_decl_warm_unused xy_decl_export void * xy_malloc(size_t size) xy_attr_noexcept xy_attr_malloc xy_attr_alloc_size(1);
 xy_decl_warm_unused xy_decl_export void * xy_calloc(size_t count, size_t size) xy_attr_noexcept xy_attr_malloc xy_attr_alloc_size2(1, 2);
