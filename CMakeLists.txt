@@ -7,16 +7,18 @@ include_directories(include)
 
 set (LINK_LIBS ${LINK_LIBS} Threads::Threads numa )
 
-add_executable(huge_page test/huge_page.cc src/os.cc include/init.h include/page.h include/segment.h)
+file(GLOB xy_malloc_src
+        src/*.cc)
+add_library(xy_malloc_lib ${xy_malloc_src})
 
-add_executable(numa_page_migrate test/numa_page_migrate.cc)
-target_link_libraries(numa_page_migrate PRIVATE ${LINK_LIBS})
+SET(tests
+        huge_page
+        numa_page_migrate
+        realloc_test
+        stack_alloc_test)
 
+FOREACH(test ${tests})
+add_executable(${test} test/${test}.cc)
+target_link_libraries(${test} PRIVATE ${LINK_LIBS} xy_malloc_lib)
+ENDFOREACH(test)
 
-
-add_executable(realloc_test test/realloc_test.cc)
-target_link_libraries(realloc_test PRIVATE ${LINK_LIBS})
-
-add_executable(xymalloc app/main.cc src/alloc.cc src/os.cc src/init.cc src/page.cc)
-
-target_link_libraries(xymalloc PRIVATE ${LINK_LIBS})
