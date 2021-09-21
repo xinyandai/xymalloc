@@ -4,7 +4,7 @@
 #pragma once
 #ifndef XYMALLOC_INCLUDE_XY_OS_H_
 #define XYMALLOC_INCLUDE_XY_OS_H_
-
+#include "xy_macro.h"
 size_t xy_get_numa_node();
 
 int xy_munmap(void *addr, size_t length);
