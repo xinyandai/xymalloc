@@ -9,6 +9,7 @@ jobs:
       - run: cmake --version
       - run: df -h
       - run: free -h
+      - run: sudo apt-get install -y libnuma-dev
   run_test:
     name: Run Tests
     runs-on: ubuntu-latest
